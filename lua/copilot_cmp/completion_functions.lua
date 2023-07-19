@@ -28,8 +28,8 @@ local format_completions = function(completions, ctx)
       item.displayText = handle_suffix(item.displayText, ctx.cursor_after_line)
     end
     
-    item.text = string.gsub(item.text, '^%s*(.-)%s*$', '%1')
-    item.displayText = string.gsub(item.displayText, '^%s*(.-)%s*$', '%1')
+    item.text = string.gsub(item.text, '%s*$', '%1')
+    item.displayText = string.gsub(item.displayText, '%s*$', '%1')
 
     print(vim.inspect(item))
     
