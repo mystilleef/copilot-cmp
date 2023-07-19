@@ -23,6 +23,8 @@ end
 
 local format_completions = function(completions, ctx)
   local format_item = function(item)
+    print(vim.inspect(item))
+    print(vim.inspect(ctx))
     if methods.fix_pairs then
       item.text = handle_suffix(item.text, ctx.cursor_after_line)
       item.displayText = handle_suffix(item.displayText, ctx.cursor_after_line)
