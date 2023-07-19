@@ -30,8 +30,6 @@ local format_completions = function(completions, ctx)
     
     item.text = string.gsub(item.text, '(.-)%s*$', '%1')
     item.displayText = string.gsub(item.displayText, '(.-)%s*$', '%1')
-
-    print(vim.inspect(item))
     
     local preview = format.get_preview(item)
     local label = format.get_label(item)
