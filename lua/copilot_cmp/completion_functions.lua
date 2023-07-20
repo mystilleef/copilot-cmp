@@ -54,8 +54,8 @@ local format_completions = function(completions, ctx)
         newText = item.text,
         --insert = multi_line.insert,
         --replace = multi_line.replace,
-        insert = item.position.character,
-        replace = item.position.character,
+        insert = item.position.range,
+        replace = item.position.range,
       },
       documentation = {
         kind = "markdown",
