@@ -24,8 +24,8 @@ end
 local format_completions = function(completions, ctx)
   local format_item = function(item)
     if methods.fix_pairs then
-      --item.text = handle_suffix(item.text, ctx.cursor_after_line)
-      --item.displayText = handle_suffix(item.displayText, ctx.cursor_after_line)
+      item.text = handle_suffix(item.text, ctx.cursor_after_line)
+      item.displayText = handle_suffix(item.displayText, ctx.cursor_after_line)
     end
     
     item.text = string.gsub(item.text, '(.-)%s*$', '%1')
@@ -35,9 +35,7 @@ local format_completions = function(completions, ctx)
     local label = format.get_label(item)
     local multi_line = format.to_multi_line(item)
 
-    vim.print("===")
-    vim.print(multi_line.insert)
-    vim.print(multi_line.replace)
+    vim.print(multi_line)
 
     return {
       copilot = true, -- for comparator, only availiable in panel, not cycling
