@@ -42,7 +42,8 @@ local format_completions = function(completions, ctx)
     return {
       copilot = true, -- for comparator, only availiable in panel, not cycling
       score = item.score or nil,
-      label = label,
+      --label = label,
+      label = item.text,
       kind = 1,
       cmp = {
         kind_hl_group = "CmpItemKindCopilot",
@@ -51,8 +52,10 @@ local format_completions = function(completions, ctx)
       sortText = item.text,
       textEdit = {
         newText = item.text,
-        insert = multi_line.insert,
-        replace = multi_line.replace,
+        --insert = multi_line.insert,
+        --replace = multi_line.replace,
+        insert = item.position.character,
+        replace = item.position.character,
       },
       documentation = {
         kind = "markdown",
