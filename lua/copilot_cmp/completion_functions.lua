@@ -42,8 +42,8 @@ local format_completions = function(completions, ctx)
     return {
       copilot = true, -- for comparator, only availiable in panel, not cycling
       score = item.score or nil,
-      --label = label,
-      label = item.text,
+      label = label,
+      --label = item.text,
       kind = 1,
       cmp = {
         kind_hl_group = "CmpItemKindCopilot",
