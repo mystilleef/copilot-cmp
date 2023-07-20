@@ -69,6 +69,8 @@ format.to_multi_line = function (item)
   local splitText = format.split(item.text)
   vim.print("---")
   vim.print(splitText)
+  vim.print(#splitText)
+  vim.print("---")
   local offset = {
     start = {
       line = item.range.start.line,
