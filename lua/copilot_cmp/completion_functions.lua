@@ -30,14 +30,15 @@ local format_completions = function(completions, ctx)
     
     item.text = string.gsub(item.text, '(.-)%s*$', '%1')
     item.displayText = string.gsub(item.displayText, '(.-)%s*$', '%1')
-    
+
+    vim.print("===")
+    vim.print(item)
+    vim.print("===")
+
     local preview = format.get_preview(item)
     local label = format.get_label(item)
     local multi_line = format.to_multi_line(item)
-
-    vim.print("===")
-    vim.print(multi_line)
-
+    
     return {
       copilot = true, -- for comparator, only availiable in panel, not cycling
       score = item.score or nil,
