@@ -35,6 +35,10 @@ local format_completions = function(completions, ctx)
     local label = format.get_label(item)
     local multi_line = format.to_multi_line(item)
 
+    vim.print(preview)
+    vim.print(label)
+    vim.print(multi_line)
+
     return {
       copilot = true, -- for comparator, only availiable in panel, not cycling
       score = item.score or nil,
