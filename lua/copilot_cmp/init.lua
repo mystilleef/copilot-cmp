@@ -3,42 +3,16 @@ local capabilities = require("copilot_cmp.capabilities")
 
 ---Registered client and source mapping.
 local M = {
-  client_source_map = {},
-  registered = false,
   default_capabilities = capabilities.default_capabilities,
   update_capabilities = capabilities.update_capabilities,
 }
 
-local default_opts = {
-  event = { "InsertEnter", "LspAttach" },
-  fix_pairs = true,
-}
-
-M._on_insert_enter = function()
-  local find_buf_client = function()
-    for _, client in ipairs(vim.lsp.get_active_clients()) do
-      if client.name == "copilot" then
-        return client
-      end
-    end
-  end
-  local cmp = require("cmp")
-  local copilot = find_buf_client()
-  if not copilot or M.client_source_map[copilot.id] then
-    return
-  end
-  local s = source.new(copilot)
-  if s:is_available() then
-    M.client_source_map[copilot.id] = cmp.register_source("copilot", s)
-  end
+local function register()
+  require("cmp").register_source("copilot", source:new())
 end
 
-M.setup = function(opts)
-  opts = vim.tbl_deep_extend("force", default_opts, opts or {})
-  local startEvent = opts.event or { "InsertEnter", "LspAttach" }
-  vim.api.nvim_create_autocmd(startEvent, {
-    callback = vim.schedule_wrap(M._on_insert_enter),
-  })
+M.setup = function()
+  vim.schedule(register)
 end
 
 return M

@@ -158,14 +158,12 @@ format.format_item = function(item, ctx, opts)
     copilot = true, -- for comparator, only available in panel, not cycling
     score = item.score or nil,
     label = multi_line.label,
-    -- filterText = multi_line.text,
     kind = 1,
     cmp = {
       kind_hl_group = "CmpItemKindCopilot",
       kind_text = "Copilot",
     },
     textEdit = {
-      -- use trim text here so it doesn't add extra indent
       newText = multi_line.text,
       range = item.range,
       -- insert = multi_line.insert,
