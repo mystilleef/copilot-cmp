@@ -15,7 +15,7 @@ source.get_trigger_characters = function()
 end
 
 -- executes before selection
-source.resolve = function(self, completion_item, callback)
+function source:resolve(completion_item, callback)
   for _, fn in ipairs(self.executions) do
     completion_item = fn(completion_item)
   end
@@ -46,11 +46,12 @@ source.execute = function(_, completion_item, callback)
   callback(completion_item)
 end
 
-source.new = function(client, opts)
+function source.new(client, opts)
   local completion_functions = require("copilot_cmp.completion_functions")
   return setmetatable({
     timer = vim.loop.new_timer(),
     client = client,
+    executions = {},
     request_ids = {},
     complete = completion_functions.init("getCompletionsCycling", opts),
   }, { __index = source })
