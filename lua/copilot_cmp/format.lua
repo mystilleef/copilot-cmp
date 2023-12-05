@@ -87,7 +87,7 @@ format.to_multi_line = function(item, ctx)
   local user_indent = string.match(ctx.cursor_before_line, "^%s")
 
   -- if there is no indent on line before cursor, detect via expandtab settings
-  -- have to do this to correcly force compliance with shiftwidth for multilines
+  -- have to do this to correctly force compliance with shiftwidth for multilines
   if user_indent == nil then
     user_indent = vim.bo.expandtab and " " or "\t"
   end
@@ -156,7 +156,7 @@ format.format_item = function(item, ctx, opts)
   local multi_line = format.to_multi_line(item, ctx)
 
   return {
-    copilot = true, -- for comparator, only availiable in panel, not cycling
+    copilot = true, -- for comparator, only available in panel, not cycling
     score = item.score or nil,
     label = multi_line.label,
     filterText = multi_line.newText,
