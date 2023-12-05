@@ -31,8 +31,11 @@ format.deindent = function(text, user_indent)
     return text
   end
 
-  local deindented =
-    string.gsub(string.gsub(string.gsub(text, "^" .. indent, ""), "\n" .. indent, "\n"), "[\r|\n]$", "")
+  local deindented = string.gsub(
+    string.gsub(string.gsub(text, "^" .. indent, ""), "\n" .. indent, "\n"),
+    "[\r|\n]$",
+    ""
+  )
 
   if #indent == 0 or not user_indent or user_indent == indent then
     return deindented
@@ -159,7 +162,7 @@ format.format_item = function(item, ctx, opts)
     copilot = true, -- for comparator, only available in panel, not cycling
     score = item.score or nil,
     label = multi_line.label,
-    filterText = multi_line.newText,
+    filterText = multi_line.text,
     kind = 1,
     cmp = {
       kind_hl_group = "CmpItemKindCopilot",
