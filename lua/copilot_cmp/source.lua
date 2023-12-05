@@ -1,5 +1,9 @@
 local source = {
+  timer = nil,
   executions = {},
+  client = nil,
+  request_ids = {},
+  complete = nil,
 }
 
 function source.get_keyword_pattern()
@@ -44,13 +48,12 @@ end
 
 source.new = function(client, opts)
   local completion_functions = require("copilot_cmp.completion_functions")
-  local self = setmetatable({
+  return setmetatable({
     timer = vim.loop.new_timer(),
+    client = client,
+    request_ids = {},
+    complete = completion_functions.init("getCompletionsCycling", opts),
   }, { __index = source })
-  self.client = client
-  self.request_ids = {}
-  self.complete = completion_functions.init("getCompletionsCycling", opts)
-  return self
 end
 
 return source
