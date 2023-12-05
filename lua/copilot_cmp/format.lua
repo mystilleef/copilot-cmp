@@ -152,17 +152,13 @@ format.format_item = function(item, ctx, opts)
     item.text = handle_suffix(item.text, ctx.cursor_after_line)
     item.displayText = handle_suffix(item.displayText, ctx.cursor_after_line)
   end
-
   item.text = string.gsub(item.text, "(.-)%s*$", "%1")
-  item.displayText = string.gsub(item.displayText, "(.-)%s*$", "%1")
-
   local multi_line = format.to_multi_line(item, ctx)
-
   return {
     copilot = true, -- for comparator, only available in panel, not cycling
     score = item.score or nil,
     label = multi_line.label,
-    filterText = multi_line.text,
+    -- filterText = multi_line.text,
     kind = 1,
     cmp = {
       kind_hl_group = "CmpItemKindCopilot",
@@ -171,8 +167,9 @@ format.format_item = function(item, ctx, opts)
     textEdit = {
       -- use trim text here so it doesn't add extra indent
       newText = multi_line.text,
-      insert = multi_line.insert,
-      replace = multi_line.replace,
+      range = item.range,
+      -- insert = multi_line.insert,
+      -- replace = multi_line.replace,
     },
     documentation = {
       kind = "markdown",

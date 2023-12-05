@@ -1,28 +1,29 @@
+-- luacheck: ignore 212
+
+local format = require("copilot_cmp.format")
+local util = require("copilot.util")
+local api = require("copilot.api")
+
 local source = {
-  timer = nil,
-  executions = {},
   client = nil,
-  request_ids = {},
   complete = nil,
+  request_ids = {},
+  timer = nil,
 }
 
-function source.get_keyword_pattern()
+function source:get_keyword_pattern()
   return "."
 end
 
-source.get_trigger_characters = function()
+function source:get_trigger_characters()
   return { "." }
 end
 
--- executes before selection
 function source:resolve(completion_item, callback)
-  for _, fn in ipairs(self.executions) do
-    completion_item = fn(completion_item)
-  end
   callback(completion_item)
 end
 
-source.is_available = function(self)
+function source:is_available()
   -- client is stopped.
   if self.client.is_stopped() then
     return false
@@ -42,18 +43,36 @@ source.is_available = function(self)
   return true
 end
 
-source.execute = function(_, completion_item, callback)
+function source:execute(completion_item, callback)
   callback(completion_item)
 end
 
-function source.new(client, opts)
-  local completion_functions = require("copilot_cmp.completion_functions")
+function source:complete(params, callback)
+  local respond_callback = function(err, response)
+    if err or not response or not response.completions then
+      vim.schedule(callback)
+    else
+      local items = vim.tbl_map(function(item)
+        return format.format_item(item, params.context, { fix_pairs = true })
+      end, vim.tbl_values(response.completions))
+      callback({
+        isIncomplete = false,
+        items = items,
+      })
+    end
+  end
+  api.get_completions_cycling(
+    self.client,
+    util.get_doc_params(),
+    vim.schedule_wrap(respond_callback)
+  )
+end
+
+function source.new(client)
   return setmetatable({
     timer = vim.loop.new_timer(),
     client = client,
-    executions = {},
     request_ids = {},
-    complete = completion_functions.init("getCompletionsCycling", opts),
   }, { __index = source })
 end
 

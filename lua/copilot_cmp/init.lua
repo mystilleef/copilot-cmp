@@ -14,7 +14,7 @@ local default_opts = {
   fix_pairs = true,
 }
 
-M._on_insert_enter = function(opts)
+M._on_insert_enter = function()
   local find_buf_client = function()
     for _, client in ipairs(vim.lsp.get_active_clients()) do
       if client.name == "copilot" then
@@ -27,7 +27,7 @@ M._on_insert_enter = function(opts)
   if not copilot or M.client_source_map[copilot.id] then
     return
   end
-  local s = source.new(copilot, opts)
+  local s = source.new(copilot)
   if s:is_available() then
     M.client_source_map[copilot.id] = cmp.register_source("copilot", s)
   end
@@ -35,12 +35,9 @@ end
 
 M.setup = function(opts)
   opts = vim.tbl_deep_extend("force", default_opts, opts or {})
-  -- just in case someone decides to set event to nil for some reason
   local startEvent = opts.event or { "InsertEnter", "LspAttach" }
   vim.api.nvim_create_autocmd(startEvent, {
-    callback = function()
-      M._on_insert_enter(opts)
-    end,
+    callback = vim.schedule_wrap(M._on_insert_enter),
   })
 end
 
