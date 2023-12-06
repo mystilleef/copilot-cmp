@@ -6,21 +6,24 @@ local api = require("copilot.api")
 
 local source = {
   client = nil,
-  complete = nil,
-  request_ids = {},
   timer = nil,
 }
 
-local set_copilot_client = function()
+local function get_copilot_client()
+  for _, client in ipairs(vim.lsp.get_active_clients()) do
+    if client.name == "copilot" then
+      return client
+    end
+  end
+  return nil
+end
+
+local function update_copilot_client()
   if source.client then
     return source.client
   else
-    for _, client in ipairs(vim.lsp.get_active_clients()) do
-      if client.name == "copilot" then
-        source.client = client
-        return client
-      end
-    end
+    source.client = get_copilot_client()
+    return source.client
   end
 end
 
@@ -41,17 +44,20 @@ function source:execute(completion_item, callback)
 end
 
 function source:complete(params, callback)
+  local update_client = function()
+    vim.schedule(update_copilot_client)
+    vim.schedule(callback)
+  end
+  local get_completions = function(response)
+    return vim.tbl_map(function(item)
+      return format.format_item(item, params.context, { fix_pairs = true })
+    end, vim.tbl_values(response.completions))
+  end
   local respond_callback = function(err, response)
     if err or not response or not response.completions then
       vim.schedule(callback)
     else
-      local items = vim.tbl_map(function(item)
-        return format.format_item(item, params.context, { fix_pairs = true })
-      end, vim.tbl_values(response.completions))
-      callback({
-        isIncomplete = false,
-        items = items,
-      })
+      callback({ isIncomplete = false, items = get_completions(response) })
     end
   end
   if self.client then
@@ -61,16 +67,14 @@ function source:complete(params, callback)
       vim.schedule_wrap(respond_callback)
     )
   else
-    vim.schedule(set_copilot_client)
-    vim.schedule(callback)
+    vim.schedule(update_client)
   end
 end
 
 function source.new()
   return setmetatable({
     timer = vim.loop.new_timer(),
-    client = set_copilot_client(),
-    request_ids = {},
+    client = update_copilot_client(),
   }, { __index = source })
 end
 
