@@ -153,25 +153,23 @@ format.format_item = function(item, ctx, opts)
     item.displayText = handle_suffix(item.displayText, ctx.cursor_after_line)
   end
   item.text = string.gsub(item.text, "(.-)%s*$", "%1")
-  local multi_line = format.to_multi_line(item, ctx)
+  local multiline = format.to_multi_line(item, ctx)
   return {
     copilot = true, -- for comparator, only available in panel, not cycling
     score = item.score or nil,
-    label = multi_line.label,
+    label = multiline.label,
     kind = 1,
     cmp = {
       kind_hl_group = "CmpItemKindCopilot",
       kind_text = "Copilot",
     },
     textEdit = {
-      newText = multi_line.text,
+      newText = multiline.text,
       range = item.range,
-      -- insert = multi_line.insert,
-      -- replace = multi_line.replace,
     },
     documentation = {
       kind = "markdown",
-      value = "```" .. vim.bo.filetype .. "\n" .. multi_line.preview .. "\n```",
+      value = "```" .. vim.bo.filetype .. "\n" .. multiline.preview .. "\n```",
     },
     dup = 0,
   }
