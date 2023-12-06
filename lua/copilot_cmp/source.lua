@@ -43,6 +43,13 @@ function source:execute(completion_item, callback)
   callback(completion_item)
 end
 
+function source:new()
+  return setmetatable({
+    timer = vim.loop.new_timer(),
+    client = update_copilot_client(),
+  }, { __index = source })
+end
+
 function source:complete(params, callback)
   local update_client = function()
     vim.schedule(update_copilot_client)
@@ -69,13 +76,6 @@ function source:complete(params, callback)
   else
     vim.schedule(update_client)
   end
-end
-
-function source.new()
-  return setmetatable({
-    timer = vim.loop.new_timer(),
-    client = update_copilot_client(),
-  }, { __index = source })
 end
 
 return source
