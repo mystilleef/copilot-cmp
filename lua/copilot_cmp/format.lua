@@ -150,12 +150,11 @@ end
 format.format_item = function(item, ctx, opts)
   if opts.fix_pairs then
     item.text = handle_suffix(item.text, ctx.cursor_after_line)
-    item.displayText = handle_suffix(item.displayText, ctx.cursor_after_line)
   end
   item.text = string.gsub(item.text, "(.-)%s*$", "%1")
   local multiline = format.to_multi_line(item, ctx)
   return {
-    copilot = true, -- for comparator, only available in panel, not cycling
+    copilot = true,
     score = item.score or nil,
     label = multiline.label,
     kind = 1,
