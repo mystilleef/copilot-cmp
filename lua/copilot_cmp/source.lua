@@ -10,7 +10,7 @@ local source = {
 }
 
 local function get_copilot_client()
-  for _, client in ipairs(vim.lsp.get_active_clients()) do
+  for _, client in ipairs(vim.lsp.get_clients()) do
     if client.name == "copilot" then
       return client
     end
